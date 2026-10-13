@@ -1,0 +1,75 @@
+name: Release theme zip
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version
+        id: version
+        run: |
+          version=$(sed -n 's/^Version:[[:space:]]*//p' style.css | head -n1 | tr -d '\r')
+          if [ -z "$version" ]; then
+            echo "style.css has no Version header" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Skip when this version is already released
+        id: existing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "v${{ steps.version.outputs.version }} already exists"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build ai-basic.zip
+        if: steps.existing.outputs.exists == 'false'
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          root = Path(".")
+          slug = "ai-basic"
+          out = Path("ai-basic.zip")
+          skip_dirs = {".git", ".github"}
+          skip_names = {".DS_Store"}
+          count = 0
+          with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+              for path in sorted(root.rglob("*")):
+                  if not path.is_file():
+                      continue
+                  if any(part in skip_dirs for part in path.parts):
+                      continue
+                  if path.name in skip_names or path.suffix == ".zip":
+                      continue
+                  zf.write(path, f"{slug}/{path.as_posix()}")
+                  count += 1
+          names = zipfile.ZipFile(out).namelist()
+          if f"{slug}/style.css" not in names:
+              raise SystemExit("zip is missing ai-basic/style.css")
+          print(f"Wrote {out} ({count} files)")
+          PY
+
+      - name: Publish release
+        if: steps.existing.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.version.outputs.version }}" \
+            ai-basic.zip \
+            --title "AI Basic ${{ steps.version.outputs.version }}" \
+            --notes "WordPress theme zip. Upload it under Appearance → Themes → Add Theme → Upload Theme, then activate AI Basic. Requires WordPress 6.5+ and PHP 7.4+. See README.md and THEME.md to change the site."
