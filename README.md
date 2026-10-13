@@ -18,11 +18,11 @@ You can paste something like this:
 ```text
 SSH to our WordPress server. The theme is at wp-content/themes/ai-basic
 (on Bitnami: /opt/bitnami/wordpress/wp-content/themes/ai-basic).
-Read THEME.md, then change the look and feel:
+Then ask me about thee the look and feel:
 - homepage hero: …
 - colors: …
 - footer: …
-Show me the files you changed. Do not restyle the site from the WordPress screen.
+Tell me about what you changed and give me a link. Do not restyle the site from the WordPress screen.
 ```
 
 When the agent is done, open the site and see if it matches what you asked for.
