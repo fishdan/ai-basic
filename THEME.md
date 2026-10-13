@@ -5,6 +5,12 @@ step, and no page-builder content in the database. Everything the theme does is
 declared in the plain-text files in this folder. If you can edit a text file,
 you can change anything about this site.
 
+You will usually be on the WordPress machine over SSH. This folder is
+`wp-content/themes/ai-basic`, or on Bitnami (including Lightsail)
+`/opt/bitnami/wordpress/wp-content/themes/ai-basic`. Edit the files here.
+The human describes the look they want; they are not applying it in the
+WordPress screen.
+
 ## This file is a contract — read this first, agent
 
 This document is not advisory. It is a **contract** between the theme and

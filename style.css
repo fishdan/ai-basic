@@ -3,11 +3,11 @@ Theme Name: AI Basic
 Theme URI: https://github.com/fishdan/ai-basic
 Author: Nonprofit Terraforms
 Author URI: https://github.com/fishdan
-Description: A minimal block theme designed to be understood, modified, and cloned by AI agents. All design tokens live in theme.json, all layout lives in declarative block templates, and THEME.md documents exactly which file to edit for any change.
+Description: A block theme an AI agent can restyle over SSH. Look and feel live in theme.json and the template files. Read THEME.md before editing. No page builder and no build step.
 Requires at least: 6.5
 Tested up to: 6.9
 Requires PHP: 7.4
-Version: 0.1.0
+Version: 0.1.1
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: ai-basic

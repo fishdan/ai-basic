@@ -1,58 +1,69 @@
 # AI Basic
 
-A small WordPress block theme. Colors, type, and spacing live in `theme.json`. Page layout lives in plain template files. There is no page builder and no build step.
+This theme takes you out of the work of restyling WordPress. You say what the site should look like. An AI agent connects to the server over SSH and edits a few text files. Reloading the site shows the change.
 
-If you can edit a text file, you can change the site. `THEME.md` is the contract for those edits: it says which file to open, and which kinds of changes to avoid.
+The agent does the file work. You review the result.
 
-The theme needs **WordPress 6.5+** and **PHP 7.4+**.
+The theme needs **WordPress 6.5+** and **PHP 7.4+**. There is no build step and no page builder. Saving a theme file is the change.
 
-## Install it
+## What you do
 
-Download the theme zip:
+1. Install and activate **AI Basic** (see below).
+2. Give your AI assistant SSH access to that machine: host, username, and a key the assistant is allowed to use. Keep the private key out of the chat.
+3. The SSH user must be able to edit the theme directory. On Bitnami, including the Amazon Lightsail WordPress image, that user is usually `bitnami`.
+4. Tell the agent what you want, and point it at the theme.
+
+You can paste something like this:
+
+```text
+SSH to our WordPress server. The theme is at wp-content/themes/ai-basic
+(on Bitnami: /opt/bitnami/wordpress/wp-content/themes/ai-basic).
+Read THEME.md, then change the look and feel:
+- homepage hero: …
+- colors: …
+- footer: …
+Show me the files you changed. Do not restyle the site from the WordPress screen.
+```
+
+When the agent is done, open the site and see if it matches what you asked for.
+
+## What the agent does
+
+1. Connect with SSH.
+2. Open the theme directory:
+   - Most installs: `wp-content/themes/ai-basic`
+   - Bitnami / Lightsail WordPress: `/opt/bitnami/wordpress/wp-content/themes/ai-basic`
+3. Read `THEME.md` before editing. That file is the contract: which file controls colors, type, header, footer, and the homepage, and which kinds of edits to refuse.
+4. Change look and feel only in those files. Colors, fonts, and spacing are `theme.json`. Layout and the words that belong to the theme are `templates/`, `parts/`, and `patterns/`.
+5. Save the files and leave them on the server. Ask the human to reload the site.
+
+If a file edit does not show up, the WordPress Site Editor has a saved copy in the database, and that copy wins. Remove that saved template so the files apply again. `THEME.md` explains this.
+
+Posts, pages, and the menu are content. The agent can still change them when you ask, but the look and feel of the theme is the files above.
+
+## Install the theme
+
+Download the zip:
 
 [ai-basic.zip](https://github.com/fishdan/ai-basic/releases/latest/download/ai-basic.zip)
 
-In WordPress:
+In WordPress: **Appearance → Themes → Add Theme → Upload Theme**, choose `ai-basic.zip`, install, then **Activate**.
 
-1. **Appearance → Themes → Add Theme → Upload Theme**
-2. Choose `ai-basic.zip`
-3. Install, then **Activate**
+The zip’s top folder is `ai-basic/`, with `style.css` inside it.
 
-The zip’s top folder is `ai-basic/`, with `style.css` inside it. That is the layout WordPress expects.
-
-You can also clone this repository straight into a WordPress install:
+To install with git, on the server:
 
 ```bash
 git clone https://github.com/fishdan/ai-basic.git wp-content/themes/ai-basic
 ```
 
-Then activate **AI Basic** under **Appearance → Themes**.
+Use `/opt/bitnami/wordpress/wp-content/themes/ai-basic` on Bitnami. Then activate **AI Basic**.
 
-## Change the site
-
-Open `THEME.md` and use the file map. A few common ones:
-
-| To change… | Edit… |
-|---|---|
-| Colors, fonts, spacing, content width | `theme.json` |
-| Header | `parts/header.html` |
-| Footer | `parts/footer.html` |
-| Homepage hero text | `patterns/hero.php` |
-| Homepage layout | `templates/front-page.html` |
-
-Menus and the site title are content. Set those in WordPress under **Appearance → Editor**, not in the theme files.
-
-Edits made in the Site Editor are stored in the database and override these files. While you are changing the theme itself, edit the files. If the site stops matching the files, clear the saved template overrides in the Site Editor.
+After that, the agent’s SSH session is how the site gets its look. The same `README.md` and `THEME.md` are in the theme directory on the server.
 
 ## Publish a new zip
 
-The downloadable zip is a GitHub release. Merging to `main` does not publish a new zip until the version changes.
-
-1. Edit the theme.
-2. Bump `Version:` in `style.css`.
-3. Merge to `main`.
-
-The release workflow builds `ai-basic.zip` and publishes it as `v` plus that version (the first one is `v0.1.0`). The “latest” download link above always points at the newest version.
+Merging to `main` publishes a new zip only when `Version:` in `style.css` changes. Bump that line, merge, and the release workflow attaches `ai-basic.zip` to the new version. The download link above follows the newest release.
 
 ## License
 
